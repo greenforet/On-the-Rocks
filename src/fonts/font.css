@@ -1,0 +1,58 @@
+@font-face {
+  font-family: 'ReciaSerifDisplay';
+  src: url('./ReciaSerifDisplay-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SSYoungestDaughter';
+  src: url('SSYoungestDaughterRegular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ohayou Oniichan';
+  src: url('./Ohayou Oniichan.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'DanielSans';
+  src: url('DanielSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Teacher';
+  src: url('Teacher.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'JacksonAmor';
+  src: url('JacksonAmor.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SSShinb7Regular';
+  src: url('SSShinb7Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Corinto Town';
+  src: url('Corinto Town.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sky Landing';
+  src: url('Sky Landing.otf') format('opentype');
+}

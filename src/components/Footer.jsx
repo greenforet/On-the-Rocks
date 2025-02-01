@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import DownArrowIcon from "../icons/DownArrowIcon.svg"
+import DownArrowIcon from '../icons/DownArrowIcon.svg'
 
 const Footer = () => {
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
@@ -129,3 +129,4 @@ const CommuityList = styled.li`
     color: lightgray;
   }
 `;
+

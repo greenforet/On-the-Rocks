@@ -1,30 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import LogoImage from "../images/OnTheRocksLogo.png";
 import CircleImage from "../images/Circle.png";
+import { useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ onMouseEnter, onMouseLeave }) => {
   const [isWinesOpen, setIsWinesOpen] = useState(false);
   const [isBeersOpen, setIsBeersOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // 드롭다운이 하나라도 열리면 부모에게 알림
+    if (isWinesOpen || isBeersOpen) {
+      onMouseEnter?.();
+    } else {
+      onMouseLeave?.();
+    }
+  }, [isWinesOpen, isBeersOpen, onMouseEnter, onMouseLeave]);
+
+  const handleWineClick = (wineType) => {
+    navigate('/winedetailedpage', { state: { type: wineType } });
+    setIsWinesOpen(false);
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   return (
     <div>
-        <HeaderContainer>
-        <HeaderImage src = {LogoImage} alt = "logoimage"/>
+      <HeaderContainer>
+        <HeaderImage 
+          src={LogoImage} 
+          alt="logoimage" 
+          onClick={handleLogoClick}
+        />
         <HeaderList>
           <List>About us</List>
-          <WinesList 
+          <WinesList
             onMouseEnter={() => setIsWinesOpen(true)}
             onMouseLeave={() => setIsWinesOpen(false)}
           >
             <List>Wines</List>
             <DropdownMenu isOpen={isWinesOpen}>
-              <li>reds</li>
-              <li>whites</li>
-              <li>sparkling</li>
-              <li>rose</li>
-              <li>dessert</li>
-              <li>port</li>
+              <li onClick={() => handleWineClick('reds')}>reds</li>
+              <li onClick={() => handleWineClick('whites')}>whites</li>
+              <li onClick={() => handleWineClick('sparkling')}>sparkling</li>
+              <li onClick={() => handleWineClick('rose')}>rose</li>
+              <li onClick={() => handleWineClick('dessert')}>dessert</li>
+              <li onClick={() => handleWineClick('port')}>port</li>
             </DropdownMenu>
           </WinesList>
           <BeersList
@@ -77,7 +101,7 @@ const HeaderList = styled.ul`
   gap: 100px; 
 `;
 
-const List =  styled.li`
+const List = styled.li`
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -144,7 +168,6 @@ const DropdownMenu = styled.ul`
     }
   }
 `;
-
 
 const LoginList = styled.li`
   display: inline-block;

@@ -7,7 +7,7 @@ const BeerSideBar = () => {
     <SideBarContainer>
       <SideBarImage src={NotePaper}/>
       <BeerList>
-        <BeerTitle>Wine List</BeerTitle>
+        <BeerTitle>Beer List</BeerTitle>
         <BeerItem>ales</BeerItem>
         <BeerItem>stouts</BeerItem>
         <BeerItem>red-ale</BeerItem>
@@ -16,7 +16,7 @@ const BeerSideBar = () => {
   );
 };
 
-export default WineSideBar;
+export default BeerSideBar;
 
 
 const SideBarContainer = styled.div`

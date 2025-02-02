@@ -23,6 +23,11 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
     setIsWinesOpen(false);
   };
 
+  const handleBeerClick = (beerType) => {
+    navigate('/beerdetailedpage', { state: { type: beerType } });
+    setIsBeersOpen(false);
+  }
+
   const handleLogoClick = () => {
     navigate('/');
   };
@@ -57,9 +62,9 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
           >
             <List>Beers</List>
             <DropdownMenu isOpen={isBeersOpen}>
-              <li>ale</li>
-              <li>stouts</li>
-              <li>red-ale</li>
+              <li onClick={() => handleBeerClick('ale')}>ale</li>
+              <li onClick={() => handleBeerClick('stouts')}>stouts</li>
+              <li onClick={() => handleBeerClick('red-ale')}>red-ale</li>
             </DropdownMenu>
           </BeersList>
           <List>Shop</List>

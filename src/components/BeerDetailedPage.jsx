@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Header from "../components/Header"
 import styled from 'styled-components';
-import WineSideBar from './WineSideBar';
+import BeerSideBar from './BeerSideBar';
 import GridContainer from './GridContainer';
-import RhombusPatternImage from "../images/RhombusPattern.jpeg"
+import FlowerPatternImage from '../images/FlowerPattern.jpeg'
 
-
-const WineDetailedPage = () => {
+const BeerDetailedPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [wines, setWines] = useState([]);
@@ -45,15 +44,15 @@ const WineDetailedPage = () => {
         />
         <ContentWrapper>
           <CategoryTitle 
-            src={RhombusPatternImage}
+            src={FlowerPatternImage}
             isDropdownOpen={isDropdownOpen}>
-            reds
+            ale
           </CategoryTitle>
         </ContentWrapper>
       </WineDetailedPageContainer>
       <MainContent>
         <SideBarWrapper>
-          <WineSideBar isDropdownOpen={isDropdownOpen}/>
+          <BeerSideBar isDropdownOpen={isDropdownOpen}/>
         </SideBarWrapper>
         <GridContainer
             items={displayedWines}
@@ -67,7 +66,7 @@ const WineDetailedPage = () => {
   );
 };
 
-export default WineDetailedPage;
+export default BeerDetailedPage;
 
 const Container = styled.div`
   width: 100vw;
@@ -128,9 +127,9 @@ const CategoryTitle = styled.div`
     right: 0;
     bottom: 0;
     background-image: url(${props => props.src});
-    background-position: center;
     background-size: 400px 600px;
     background-repeat: repeat;  
+    background-position: center;
     opacity: 0.6;
     z-index: -1;
   }
@@ -151,4 +150,3 @@ const SideBarWrapper = styled.div`
   width: 300px;
   z-index: 1;
 `;
-

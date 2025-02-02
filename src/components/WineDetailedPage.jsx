@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Header from "../components/Header"
 import styled from 'styled-components';
 import WineSideBar from './WineSideBar';
+import GridContainer from './GridContainer';
+import WinesImage from '../images/Wines.jpeg';
 
 const WineDetailedPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -33,48 +35,32 @@ const WineDetailedPage = () => {
     setDisplayedWines(wines.slice(startIndex, endIndex));
   }, [currentPage, wines]);
 
-  const totalPages = Math.ceil(wines.length / itemsPerPage);
-
   return (
     <Container>
-      <WineDetailedPageContainer>
+      <WineDetailedPageContainer isDropdownOpen={isDropdownOpen}>
         <Header 
           onMouseEnter={() => setIsDropdownOpen(true)}
           onMouseLeave={() => setIsDropdownOpen(false)}
         />
         <ContentWrapper>
-          <CategoryTitle isDropdownOpen={isDropdownOpen}>
+          <CategoryTitle 
+            src={WinesImage}
+            isDropdownOpen={isDropdownOpen}>
             reds
           </CategoryTitle>
         </ContentWrapper>
       </WineDetailedPageContainer>
       <MainContent>
-      <SideBarWrapper>
-        <WineSideBar isDropdownOpen={isDropdownOpen}/>
-      </SideBarWrapper>
-      <WineGridContainer>
-        <WineGrid>
-          {displayedWines.map((wine) => (
-            <WineItem key={wine.id}>
-              <WineImage>{wine.image}</WineImage>
-              <WineName>{wine.name}</WineName>
-            </WineItem>
-          ))}
-        </WineGrid>
-        {totalPages > 1 && (
-          <Pagination>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PageButton
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                isActive={currentPage === page}
-              >
-                {page}
-              </PageButton>
-            ))}
-          </Pagination>
-        )}
-      </WineGridContainer>
+        <SideBarWrapper>
+          <WineSideBar isDropdownOpen={isDropdownOpen}/>
+        </SideBarWrapper>
+        <GridContainer
+            items={displayedWines}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={wines.length} 
+          />
       </MainContent>
     </Container>
   );
@@ -95,10 +81,23 @@ const Container = styled.div`
 const WineDetailedPageContainer = styled.div`
   min-width: 1200px; 
   width: 100%;
-  height: 350px;
   position: fixed;
   top: 0;
   z-index: 3;
+  background-color: #F2F0EA;
+
+  &::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: ${props => props.isDropdownOpen ? '400px' : '130px'};
+  background-color: #93C6E7;
+  transition: all 0.5s ease;
+  opacity: ${props => props.isDropdownOpen ? 1 : 0};
+  z-index: -1;
+}
 `;
 
 const ContentWrapper = styled.div`
@@ -116,11 +115,23 @@ const CategoryTitle = styled.div`
   padding-bottom: 20px;
   padding-top: 20px;
   font-family: 'JacksonAmor', serif;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
   margin-top: ${props => props.isDropdownOpen ? '400px' : '130px'};
   transition: margin-top 0.5s ease;
   position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(${props => props.src});
+    background-size: cover;
+    background-position: center;
+    opacity: 0.6;
+    z-index: -1;
+  }
 `;
 
 const MainContent = styled.div`
@@ -128,7 +139,7 @@ const MainContent = styled.div`
   position: relative;
   min-height: calc(100vh - 350px);
   overflow: hidden;
-    margin-top: 350px;
+  margin-top: 350px;
 `;
 
 const SideBarWrapper = styled.div`
@@ -136,66 +147,6 @@ const SideBarWrapper = styled.div`
   top: 100px;
   left: 50px;
   width: 300px;
-  height: 100%;
   z-index: 1;
 `;
 
-const WineGridContainer = styled.div`
-  flex: 1;
-  padding-left: 350px;
-  margin-bottom: 140px;
-  overflow-y: auto;
-  height: 100%;
-`;
-
-const WineGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  max-width: 1200px;
-  margin-left: 60px;
-  margin-right: 60px;
-`;
-
-const WineItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-`;
-
-const WineImage = styled.div`
-  width: 200px;
-  height: 300px;
-  background-color: #ddd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const WineName = styled.div`
-  font-size: 1.2rem;
-  font-family: 'SSShinb7Regular', serif;
-  text-align: center;
-`;
-
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 80px;
-`;
-
-const PageButton = styled.button`
-  padding: 8px 16px;
-  border: none;
-  background-color: ${props => props.isActive ? '#93C6E7' : 'transparent'};
-  color: ${props => props.isActive ? 'white' : 'black'};
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: ${props => props.isActive ? '#93C6E7' : '#e0e0e0'};
-  }
-`;

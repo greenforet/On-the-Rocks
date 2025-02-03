@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, totalItems }) => {
+const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, totalItems, onItemClick }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
@@ -9,7 +9,7 @@ const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, total
       <Grid>
         {items.map((item) => (
           <GridItem key={item.id}>
-            <ItemImage>{item.image}</ItemImage>
+            <ItemImage onClick={() => onItemClick(item.id)}>{item.image}</ItemImage>
             <ItemName>{item.name}</ItemName>
           </GridItem>
         ))}
@@ -35,10 +35,9 @@ export default GridContainer;
 
 const Container = styled.div`
   flex: 1;
-  padding-left: 350px;
-  margin-bottom: 140px;
-  overflow-y: auto;
+  margin-bottom: 100px;
   height: 100%;
+  padding-left: 50px; 
 `;
 
 const Grid = styled.div`

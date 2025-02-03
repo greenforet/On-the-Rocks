@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import Header from "../components/Header"
 import styled from 'styled-components';
-import RhombusPatternImage from "../images/RhombusPattern.jpeg"
+import { createGlobalStyle } from 'styled-components';
+import Header from '../components/Header';
+import RhombusPatternImage from '../images/RhombusPattern.jpeg'
 
-const WineInfoPage = () => {
+const AboutUsPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
     <Container>
+      <GlobalStyle />
       <WineDetailedPageContainer isDropdownOpen={isDropdownOpen}>
         <Header 
           onMouseEnter={() => setIsDropdownOpen(true)}
@@ -17,31 +19,35 @@ const WineInfoPage = () => {
           <CategoryTitle 
             src={RhombusPatternImage}
             isDropdownOpen={isDropdownOpen}>
-            reds
+            SHOP
           </CategoryTitle>
         </ContentWrapper>
       </WineDetailedPageContainer>
-      <WineInfoContainer>
-        <WineImageSection>상세이미지</WineImageSection>
-        <WineDetailsSection>
-          <DetailItem>winery</DetailItem>
-          <DetailItem>wine</DetailItem>
-          <DetailItem>rating</DetailItem>
-          <DetailItem>location</DetailItem>
-        </WineDetailsSection>
-      </WineInfoContainer>
+      <MainContent>
+        <MapContent>
+          여기는 지도
+        </MapContent>
+      </MainContent>
     </Container>
   );
 };
 
-export default WineInfoPage;
+export default AboutUsPage;
+
+const GlobalStyle = createGlobalStyle`
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #F2F0EA;
+  }
+
+  #root {
+    height: 100%;
+  }
+`;
 
 const Container = styled.div`
-  background-color: #F2F0EA;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
 `;
 
 const WineDetailedPageContainer = styled.div`
@@ -93,43 +99,25 @@ const CategoryTitle = styled.div`
     right: 0;
     bottom: 0;
     background-image: url(${props => props.src});
-    background-position: center;
-    background-size: 400px 600px;
+    background-size: 300px 500px;
     background-repeat: repeat;  
+    background-position: center;
     opacity: 0.6;
     z-index: -1;
   }
 `;
 
-const WineInfoContainer = styled.div`
-  display: flex;
-  margin: 100px;
-  margin-top: 350px; 
-  gap: 100px;
-`;
-
-const WineImageSection = styled.div`
-  flex: 1;
-  width: 200px;
-  height: 350px;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 50px;
-  margin: 30px;
-`;
-
-const WineDetailsSection = styled.div`
-  flex: 1;
+const MainContent = styled.div`
+  width: 700px;
+  margin: 350px auto 0;
+  font-family: 'SSShinb7Regular', serif;
+  font-size: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin: 30px;
-  margin-top: 50px;
 `;
 
-const DetailItem = styled.div`
-  padding: 15px;
-  border-radius: 8px;
-  font-family: 'SSShinb7Regular', serif;
-  font-size: 3rem;
+const MapContent = styled.div`
+  heiht: 400px;
+  width: 400px;
+  background-color; white;
 `;

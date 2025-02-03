@@ -10,7 +10,6 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 드롭다운이 하나라도 열리면 부모에게 알림
     if (isWinesOpen || isBeersOpen) {
       onMouseEnter?.();
     } else {
@@ -32,6 +31,19 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
     navigate('/');
   };
 
+  const handleAboutUsClick = () => {
+    navigate('/aboutuspage');
+  };
+
+  const handleShopClick = () => {
+    navigate('/shoppage');
+  };
+
+  const handleTipsClick = () => {
+    navigate('/tipspage')
+  };
+
+
   return (
     <div>
       <HeaderContainer>
@@ -41,7 +53,7 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
           onClick={handleLogoClick}
         />
         <HeaderList>
-          <List>About us</List>
+          <List onClick={handleAboutUsClick}>About us</List>
           <WinesList
             onMouseEnter={() => setIsWinesOpen(true)}
             onMouseLeave={() => setIsWinesOpen(false)}
@@ -67,10 +79,10 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
               <li onClick={() => handleBeerClick('red-ale')}>red-ale</li>
             </DropdownMenu>
           </BeersList>
-          <List>Shop</List>
+          <List onClick={handleShopClick}>Shop</List>
         </HeaderList>
         <HeaderLogin>
-          <LoginList>★ Tips! ★</LoginList>
+          <LoginList onClick={handleTipsClick}>★ Tips! ★</LoginList>
         </HeaderLogin>
       </HeaderContainer>
     </div>

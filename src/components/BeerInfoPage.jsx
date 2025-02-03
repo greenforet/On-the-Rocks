@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Header from "../components/Header"
 import styled from 'styled-components';
-import RhombusPatternImage from "../images/RhombusPattern.jpeg"
+import FlowerPatternImage from '../images/FlowerPattern.jpeg'
 
-const WineInfoPage = () => {
+const BeerInfoPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
@@ -15,26 +15,25 @@ const WineInfoPage = () => {
         />
         <ContentWrapper>
           <CategoryTitle 
-            src={RhombusPatternImage}
+            src={FlowerPatternImage}
             isDropdownOpen={isDropdownOpen}>
-            reds
+            ale
           </CategoryTitle>
         </ContentWrapper>
       </WineDetailedPageContainer>
       <WineInfoContainer>
         <WineImageSection>상세이미지</WineImageSection>
         <WineDetailsSection>
-          <DetailItem>winery</DetailItem>
-          <DetailItem>wine</DetailItem>
+          <DetailItem>Price</DetailItem>
+          <DetailItem>Name</DetailItem>
           <DetailItem>rating</DetailItem>
-          <DetailItem>location</DetailItem>
         </WineDetailsSection>
       </WineInfoContainer>
     </Container>
   );
 };
 
-export default WineInfoPage;
+export default BeerInfoPage;
 
 const Container = styled.div`
   background-color: #F2F0EA;
@@ -124,7 +123,7 @@ const WineDetailsSection = styled.div`
   flex-direction: column;
   gap: 15px;
   margin: 30px;
-  margin-top: 50px;
+  margin-top: 100px;
 `;
 
 const DetailItem = styled.div`

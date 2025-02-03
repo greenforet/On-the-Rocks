@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from "../components/Header"
 import styled from 'styled-components';
 import BeerSideBar from './BeerSideBar';
@@ -10,6 +11,10 @@ const BeerDetailedPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [wines, setWines] = useState([]);
   const [displayedWines, setDisplayedWines] = useState([]);
+  const containerRef = useRef(null);
+  const [barPosition, setBarPosition] = useState(400);
+
+  const navigate = useNavigate();
 
   const itemsPerPage = 6;
 
@@ -34,9 +39,39 @@ const BeerDetailedPage = () => {
     const endIndex = startIndex + itemsPerPage;
     setDisplayedWines(wines.slice(startIndex, endIndex));
   }, [currentPage, wines]);
+  
+  const handleItemClick = (itemId) => {
+    navigate(`/beerinfopage/${itemId}`);
+  };
+
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const sidebarHeight = 600;
+    
+    const minPosition = 400;
+    const maxPosition = containerRect.height - sidebarHeight - 100;
+
+    const newPosition = Math.min(
+      maxPosition,
+      Math.max(minPosition, minPosition + (scrollTop * 0.3))
+    );
+    
+    setBarPosition(newPosition);
+  };
+  
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+  
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <Container>
+    <Container ref={containerRef}>
       <WineDetailedPageContainer isDropdownOpen={isDropdownOpen}>
         <Header 
           onMouseEnter={() => setIsDropdownOpen(true)}
@@ -51,16 +86,19 @@ const BeerDetailedPage = () => {
         </ContentWrapper>
       </WineDetailedPageContainer>
       <MainContent>
-        <SideBarWrapper>
+        <SideBarWrapper style={{ top: `${barPosition}px` }}>
           <BeerSideBar isDropdownOpen={isDropdownOpen}/>
         </SideBarWrapper>
-        <GridContainer
-            items={displayedWines}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            itemsPerPage={itemsPerPage}
-            totalItems={wines.length} 
-          />
+        <GridSection>
+          <GridContainer
+              items={displayedWines}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={wines.length} 
+              onItemClick={handleItemClick}
+            />
+        </GridSection>
       </MainContent>
     </Container>
   );
@@ -69,13 +107,15 @@ const BeerDetailedPage = () => {
 export default BeerDetailedPage;
 
 const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;        
+  height: 100%;
   background-color: #F2F0EA;
-  min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-y: auto;
+  position: relative;
+  display: flex;     
+  flex-direction: column; 
 `;
 
 const WineDetailedPageContainer = styled.div`
@@ -127,7 +167,7 @@ const CategoryTitle = styled.div`
     right: 0;
     bottom: 0;
     background-image: url(${props => props.src});
-    background-size: 400px 600px;
+    background-size: 300px 500px;
     background-repeat: repeat;  
     background-position: center;
     opacity: 0.6;
@@ -139,14 +179,21 @@ const MainContent = styled.div`
   display: flex;
   position: relative;
   min-height: calc(100vh - 350px);
-  overflow: hidden;
   margin-top: 350px;
+  padding-bottom: 50px;
+  width: 100%;
+`;
+
+const GridSection = styled.div`
+  flex: 1;
+  margin-left: 300px;  
 `;
 
 const SideBarWrapper = styled.div`
   position: fixed;
-  top: 100px;
   left: 50px;
-  width: 300px;
   z-index: 1;
+  transform: translateY(-33%);
+  transition: top 0.3s ease-out;
+  height: fit-content;
 `;

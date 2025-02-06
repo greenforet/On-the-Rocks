@@ -1,26 +1,45 @@
 import React from 'react';
 import styled from 'styled-components';
 import NotePaper from "../images/NotePaper.png"
+import { useNavigate } from 'react-router-dom';
 
-const WineSideBar = () => {
+const WineSideBar = ({ currentCategory, setCurrentCategory }) => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category) => {
+    setCurrentCategory(category);
+    navigate('/winedetailedpage', { state: { type: category } });
+  };
+
+  const categories = [
+    { id: 'reds', label: 'Reds' },
+    { id: 'whites', label: 'Whites' },
+    { id: 'sparkling', label: 'Sparkling' },
+    { id: 'rose', label: 'Rose' },
+    { id: 'dessert', label: 'Dessert' },
+    { id: 'port', label: 'Port' }
+  ];
+
   return (
     <SideBarContainer>
       <SideBarImage src={NotePaper}/>
       <WineList>
         <WineTitle>Wine List</WineTitle>
-        <WineItem>reds</WineItem>
-        <WineItem>whites</WineItem>
-        <WineItem>sparkling</WineItem>
-        <WineItem>rose</WineItem>
-        <WineItem>dessert</WineItem>
-        <WineItem>port</WineItem>
+        {categories.map((category) => (
+          <WineItem 
+            key={category.id}
+            isActive={currentCategory === category.id}
+            onClick={() => handleCategoryClick(category.id)}
+          >
+            {category.label}
+          </WineItem>
+        ))}
       </WineList>
     </SideBarContainer>
   );
 };
 
 export default WineSideBar;
-
 
 const SideBarContainer = styled.div`
   position: relative;
@@ -32,7 +51,6 @@ const SideBarImage = styled.img`
   height: 600px;
   padding-bottom: 200px;
   margin-top: 130px;
-
 `;
 
 const WineList = styled.div`
@@ -51,18 +69,35 @@ const WineTitle = styled.h2`
   font-size: 2rem;
   font-family: 'JacksonAmor', serif;
   color: #4A4A4A;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
   margin-top: 180px;
 `;
 
 const WineItem = styled.div`
-  font-size: 1.2rem;
-  color: #4A4A4A;
+  font-size: ${props => props.isActive ? '1.6rem;' : '1.2rem'};
+  color: ${props => props.isActive ? '#C1121F;' : '#4A4A4A'};
+  font-weight: ${props => props.isActive ? 'bold' : 'normal'};
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   font-family: 'SSShinb7Regular', serif;
+  position: relative;
 
   &:hover {
-    color: #93C6E7;
+    color: #C1121F;
+    font-size: 1.6rem;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: ${props => props.isActive ? '100%' : '0'};
+    height: 2px;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
   }
 `;

@@ -4,7 +4,13 @@ import LogoImage from "../images/OnTheRocksLogo.png";
 import CircleImage from "../images/Circle.png";
 import { useNavigate } from 'react-router-dom';
 
-const Header = ({ onMouseEnter, onMouseLeave }) => {
+const Header = (props) => {
+  const { 
+    onMouseEnter, 
+    onMouseLeave, 
+    currentCategory, 
+    setCurrentCategory 
+  } = props;
   const [isWinesOpen, setIsWinesOpen] = useState(false);
   const [isBeersOpen, setIsBeersOpen] = useState(false);
   const navigate = useNavigate();
@@ -17,10 +23,10 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
     }
   }, [isWinesOpen, isBeersOpen, onMouseEnter, onMouseLeave]);
 
-  const handleWineClick = (wineType) => {
-    navigate('/winedetailedpage', { state: { type: wineType } });
-    setIsWinesOpen(false);
-  };
+  // const handleWineClick = (wineType) => {
+  //   navigate('/winedetailedpage', { state: { type: wineType } });
+  //   setIsWinesOpen(false);
+  // };
 
   const handleBeerClick = (beerType) => {
     navigate('/beerdetailedpage', { state: { type: beerType } });
@@ -42,7 +48,12 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
   const handleTipsClick = () => {
     navigate('/tipspage')
   };
-
+  
+  const handleWineClick = (wineType) => {
+    // setCurrentCategory가 없더라도 네비게이션은 작동하도록 수정
+    navigate('/winedetailedpage', { state: { type: wineType } });
+    setIsWinesOpen(false);
+  };
 
   return (
     <div>
@@ -60,8 +71,18 @@ const Header = ({ onMouseEnter, onMouseLeave }) => {
           >
             <List>Wines</List>
             <DropdownMenu isOpen={isWinesOpen}>
-              <li onClick={() => handleWineClick('reds')}>reds</li>
-              <li onClick={() => handleWineClick('whites')}>whites</li>
+              <li 
+              onClick={() => handleWineClick('reds')}
+              className={currentCategory === 'reds' ? 'active' : ''}
+              >
+              reds
+              </li>
+              <li 
+              onClick={() => handleWineClick('whites')}
+              className={currentCategory === 'whites' ? 'active' : ''}
+              >
+              whites
+              </li>
               <li onClick={() => handleWineClick('sparkling')}>sparkling</li>
               <li onClick={() => handleWineClick('rose')}>rose</li>
               <li onClick={() => handleWineClick('dessert')}>dessert</li>
@@ -135,7 +156,7 @@ const List = styled.li`
     background-size: contain;
     background-repeat: no-repeat;
     opacity: 0;
-    transition: opacity 0.3s ease; 
+    transition: opacity 0.5s ease; 
     pointer-events: none;
   }
 
@@ -182,6 +203,10 @@ const DropdownMenu = styled.ul`
     
     &:hover {
       color: lightgray;
+    }
+    &.active {
+      color: #4A4A4A;
+      font-weight: bold;
     }
   }
 `;

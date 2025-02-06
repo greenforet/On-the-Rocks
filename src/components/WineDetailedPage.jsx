@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from "../components/Header"
 import styled from 'styled-components';
 import WineSideBar from './WineSideBar';
@@ -10,53 +10,75 @@ const WineDetailedPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [wines, setWines] = useState([]);
-  const [displayedWines, setDisplayedWines] = useState([]);
-  const containerRef = useRef(null);
   const [barPosition, setBarPosition] = useState(400);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const containerRef = useRef(null);
+  const location = useLocation();
   const navigate = useNavigate();
+  const [currentCategory, setCurrentCategory] = useState('reds'); 
 
-  const itemsPerPage = 6;
-
-  useEffect(() => {
-    const tempData = [
-      { id: 1, image: "와인사진1", name: "Chateau Margaux" },
-      { id: 2, image: "와인사진2", name: "Opus One" },
-      { id: 3, image: "와인사진3", name: "Petrus" },
-      { id: 4, image: "와인사진4", name: "Lafite Rothschild" },
-      { id: 5, image: "와인사진5", name: "Mouton Rothschild" },
-      { id: 6, image: "와인사진6", name: "Latour" },
-      { id: 7, image: "와인사진7", name: "Haut-Brion" },
-      { id: 8, image: "와인사진8", name: "Romanée-Conti" },
-      { id: 9, image: "와인사진9", name: "Screaming Eagle" },
-      { id: 10, image: "와인사진10", name: "Grange" }
-    ];
-    setWines(tempData);
-  }, []);
+  const itemsPerPage = 15;
 
   useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setDisplayedWines(wines.slice(startIndex, endIndex));
-  }, [currentPage, wines]);
-  
-  const handleItemClick = (itemId) => {
-    navigate(`/beerinfopage/${itemId}`);
+    const categoryFromState = location.state?.type;
+    if (categoryFromState) {
+      setCurrentCategory(categoryFromState);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    const fetchWines = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`https://api.sampleapis.com/wines/${currentCategory}`);
+        if (!response.ok) throw new Error('Failed to fetch wines');
+        
+        const data = await response.json();
+        const formattedData = data.map(wine => ({
+          id: wine.id,
+          name: wine.wine,
+          image: wine.image || 'default-wine-image.jpg' 
+        }));
+        
+        setWines(formattedData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWines();
+  }, [currentCategory]);
+
+  const handleWineClick = (id) => {
+    navigate(`/wineinfopage/${id}`); 
   };
 
+  // const getCurrentPageWines = () => {
+  //   const startIndex = (currentPage - 1) * itemsPerPage;
+  //   return wines.slice(startIndex, startIndex + itemsPerPage);
+  // };
+
   const handleScroll = () => {
-    if (!containerRef.current) return;
-
-    const containerRect = containerRef.current.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const sidebarHeight = 600;
+    const startPosition = 400; 
+    const windowHeight = window.innerHeight;
+    const sidebarHeight = 750; 
     
-    const minPosition = 400;
-    const maxPosition = containerRect.height - sidebarHeight - 100;
+    const maxScroll = Math.max(0, windowHeight - sidebarHeight);
+    
+    let newPosition = startPosition;
+    
+    if (scrollTop > 0) {
+      const scrollOffset = Math.min(scrollTop * 0.2, maxScroll);
+      newPosition = startPosition + scrollOffset;
+    }
 
-    const newPosition = Math.min(
-      maxPosition,
-      Math.max(minPosition, minPosition + (scrollTop * 0.3))
+    newPosition = Math.min(
+      startPosition + maxScroll, 
+      Math.max(startPosition, newPosition)
     );
     
     setBarPosition(newPosition);
@@ -64,7 +86,6 @@ const WineDetailedPage = () => {
   
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-  
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -76,28 +97,34 @@ const WineDetailedPage = () => {
         <Header 
           onMouseEnter={() => setIsDropdownOpen(true)}
           onMouseLeave={() => setIsDropdownOpen(false)}
+          currentCategory={currentCategory}
+          setCurrentCategory={setCurrentCategory}
         />
         <ContentWrapper>
           <CategoryTitle 
             src={RhombusPatternImage}
             isDropdownOpen={isDropdownOpen}>
-            reds
+            {currentCategory}
           </CategoryTitle>
         </ContentWrapper>
       </WineDetailedPageContainer>
       <MainContent>
         <SideBarWrapper style={{ top: `${barPosition}px` }}>
-          <WineSideBar isDropdownOpen={isDropdownOpen}/>
+          <WineSideBar 
+          isDropdownOpen={isDropdownOpen}
+          currentCategory={currentCategory}
+          setCurrentCategory={setCurrentCategory}
+          />
         </SideBarWrapper>
-        <GridSection>
+        <GridSection >
           <GridContainer
-              items={displayedWines}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              itemsPerPage={itemsPerPage}
-              totalItems={wines.length} 
-              onItemClick={handleItemClick}
-            />
+            items={wines}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            itemsPerPage={15}
+            totalItems={wines.length}
+            onItemClick={handleWineClick}
+          />
         </GridSection>
       </MainContent>
     </Container>
@@ -109,6 +136,7 @@ export default WineDetailedPage;
 const Container = styled.div`
   width: 100%;        
   height: 100%;
+  margin-bottom: 200px;
   background-color: #F2F0EA;
   margin: 0;
   padding: 0;

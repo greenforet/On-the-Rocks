@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 import Header from '../components/Header';
-import RhombusPatternImage from '../images/RhombusPattern.jpeg'
+import PartyPeopleImage from '../images/PartyPeople.png'
 
 const AboutUsPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <Container>
+    <>
       <GlobalStyle />
       <WineDetailedPageContainer isDropdownOpen={isDropdownOpen}>
         <Header 
@@ -17,7 +17,6 @@ const AboutUsPage = () => {
         />
         <ContentWrapper>
           <CategoryTitle 
-            src={RhombusPatternImage}
             isDropdownOpen={isDropdownOpen}>
             About Us
           </CategoryTitle>
@@ -38,7 +37,11 @@ const AboutUsPage = () => {
           술을 고를 때 "오늘은 어떤 술을 마셔볼까?" 하는 고민을 조금 더 재미있고 가볍게 만들어주는 공간이에요. 자, 그럼 오늘은 어떤 술을 선택할까요?
         </StyledParagraph>
       </MainContent>
-    </Container>
+      <LastContent>
+        <FirstBottomImage src = {PartyPeopleImage}></FirstBottomImage>
+        <SecondBottomImage>이미지2</SecondBottomImage>
+      </LastContent>
+    </>
   );
 };
 
@@ -57,9 +60,6 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Container = styled.div`
-`;
-
 const WineDetailedPageContainer = styled.div`
   min-width: 1200px; 
   width: 100%;
@@ -74,7 +74,7 @@ const WineDetailedPageContainer = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: ${props => props.isDropdownOpen ? '400px' : '130px'};
+  height: ${props => props.isDropdownOpen ? '400px' : '150px'};
   background-color: #93C6E7;
   transition: all 0.5s ease;
   opacity: ${props => props.isDropdownOpen ? 1 : 0};
@@ -95,25 +95,57 @@ const CategoryTitle = styled.div`
   flex-direction: column;
   align-items: center;
   padding-bottom: 20px;
-  padding-top: 20px;
+  padding-top: ${props => props.isDropdownOpen ? '50px' : '30px'};
   font-family: 'JacksonAmor', serif;
   margin-top: ${props => props.isDropdownOpen ? '400px' : '130px'};
   transition: margin-top 0.5s ease;
   position: relative;
+  background: ${props => props.isDropdownOpen ? '#F2F0EA' : '#93C6E7'};
+  z-index: 1; 
 
+  // 상단 웨이브 라인
   &::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: -37px;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url(${props => props.src});
-    background-size: 300px 500px;
-    background-repeat: repeat;  
-    background-position: center;
-    opacity: 0.6;
-    z-index: -1;
+    width: 100%;
+    height: 75px;
+    opacity: ${props => props.isDropdownOpen ? 1 : 0};
+    transition: all 0.5s ease;
+    background: #93C6E7;
+    --s: 50px;
+    --b: 50px;
+    --m: 2.5;
+    --R: calc(var(--s)*sqrt(var(--m)*var(--m) + 1) + var(--b)/2);
+    --_g: #0000 calc(99% - var(--b)), #F2F0EA calc(101% - var(--b)) 99%, #0000 101%;
+    mask: 
+      radial-gradient(var(--R) at left 50% bottom calc(-1*var(--m)*var(--s)), var(--_g)) 
+        calc(50% - 2*var(--s)) calc(50% - var(--s)/2 - var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x,
+      radial-gradient(var(--R) at left 50% top calc(-1*var(--m)*var(--s)), var(--_g)) 
+        50% calc(50% + var(--s)/2 + var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x;
+  }
+
+  // 하단 웨이브 라인
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -36px;
+    left: 0;
+    width: 100%;
+    height: 75px;
+    opacity: ${props => props.isDropdownOpen ? 0 : 1};
+    background: #93C6E7;
+    --s: 50px;
+    --b: 50px;
+    --m: 2.5;
+    --R: calc(var(--s)*sqrt(var(--m)*var(--m) + 1) + var(--b)/2);
+    --_g: #0000 calc(99% - var(--b)), #F2F0EA calc(101% - var(--b)) 99%, #0000 101%;
+    mask: 
+      radial-gradient(var(--R) at left 50% bottom calc(-1*var(--m)*var(--s)), var(--_g)) 
+        calc(50% - 2*var(--s)) calc(50% - var(--s)/2 - var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x,
+      radial-gradient(var(--R) at left 50% top calc(-1*var(--m)*var(--s)), var(--_g)) 
+        50% calc(50% + var(--s)/2 + var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x;
   }
 `;
 
@@ -126,7 +158,7 @@ const MainContent = styled.div`
   flex-direction: column;
   gap: 0.5rem;
 
-  p:first-child {  // "술, 한 잔의 모험"
+  p:first-child {  
     font-size: 2rem;
     margin-left: 2rem;
     color: #555;
@@ -137,4 +169,24 @@ const StyledParagraph = styled.p`
   margin-left: ${props => props.indent || '0'};
   margin-bottom: 0rem;
   line-height: 1.5;
+`;
+
+const LastContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 300px;
+
+`;
+
+const FirstBottomImage = styled.img`
+  bottom: 0;
+  width: 450px; 
+  height: auto;
+  opacity: 0.8;
+`;
+
+const SecondBottomImage = styled.div`
+  bottom: 0;
+  background-color: gray;
 `;

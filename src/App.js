@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import WineDetailedPage from './components/WineDetailedPage';
 import MainPage from './Pages/MainPage';
 import BeerDetailedPage from './components/BeerDetailedPage';
@@ -10,7 +10,6 @@ import TipsPage from './Pages/TipsPage';
 
 function App() {
   return (
-    <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainPage/>} />
         <Route path="/winedetailedpage" element={<WineDetailedPage />} />
@@ -21,7 +20,6 @@ function App() {
         <Route path="/shoppage" element={<ShopPage/>} />
         <Route path="/tipspage" element={<TipsPage/>} />
       </Routes>
-    </BrowserRouter>
   );
 }
 

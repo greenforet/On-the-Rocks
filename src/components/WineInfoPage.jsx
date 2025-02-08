@@ -1,10 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import Header from "../components/Header"
 import styled from 'styled-components';
 import RhombusPatternImage from "../images/RhombusPattern.jpeg"
 
 const WineInfoPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [wineInfo, setWineInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { itemId } = useParams();
+  const location = useLocation();
+  const currentCategory = location.state?.category 
+
+  useEffect(() => {
+    const fetchWineInfo = async () => {
+      try {
+        const response = await fetch(`https://api.sampleapis.com/wines/${currentCategory}`);
+        if (!response.ok) throw new Error('Failed to fetch wines');
+
+        const wines = await response.json();
+        const wine = wines.find(w => Number(w.id) === Number(itemId));
+        
+        if (wine) {
+          setWineInfo(wine);
+          setLoading(false);
+          return;
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+
+    fetchWineInfo();
+  }, [itemId, currentCategory]);
+
+  if (loading) return <LoadingMessage>Loading wine information...</LoadingMessage>;
+  if (!wineInfo) return <ErrorMessage>Wine not found</ErrorMessage>;
 
   return (
     <Container>
@@ -17,17 +49,22 @@ const WineInfoPage = () => {
           <CategoryTitle 
             src={RhombusPatternImage}
             isDropdownOpen={isDropdownOpen}>
-            reds
+            {currentCategory}
           </CategoryTitle>
         </ContentWrapper>
       </WineDetailedPageContainer>
       <WineInfoContainer>
-        <WineImageSection>상세이미지</WineImageSection>
+        <WineImageSection>
+          <WineImage 
+            src={wineInfo.image || 'default-wine-image.jpg'} 
+            alt={wineInfo.wine} 
+          />
+        </WineImageSection>
         <WineDetailsSection>
-          <DetailItem>winery</DetailItem>
-          <DetailItem>wine</DetailItem>
-          <DetailItem>rating</DetailItem>
-          <DetailItem>location</DetailItem>
+          <DetailItem><Label>Winery:</Label> {wineInfo.winery}</DetailItem>
+          <DetailItem><Label>Wine:</Label> {wineInfo.wine}</DetailItem>
+          <DetailItem><Label>Rating:</Label> {wineInfo.rating?.average}</DetailItem>
+          <DetailItem><Label>Location:</Label> {wineInfo.location}</DetailItem>
         </WineDetailsSection>
       </WineInfoContainer>
     </Container>
@@ -112,10 +149,16 @@ const WineImageSection = styled.div`
   flex: 1;
   width: 200px;
   height: 350px;
-  background-color: #fff;
   border-radius: 8px;
   padding: 50px;
   margin: 30px;
+`;
+
+const WineImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
 `;
 
 const WineDetailsSection = styled.div`
@@ -131,5 +174,31 @@ const DetailItem = styled.div`
   padding: 15px;
   border-radius: 8px;
   font-family: 'SSShinb7Regular', serif;
+  font-size: 1.8rem;
+`;
+
+const Label = styled.span`
+  font-weight: bold;
+  color: #4A4A4A;
+  margin-right: 10px;
   font-size: 3rem;
 `;
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2rem;
+`;
+
+const ErrorMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+  color: red;
+  font-size: 1.2rem;
+`;
+
+
+
+
+
+

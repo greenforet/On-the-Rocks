@@ -27,39 +27,48 @@ const WineDetailedPage = () => {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    const fetchWines = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`https://api.sampleapis.com/wines/${currentCategory}`);
-        if (!response.ok) throw new Error('Failed to fetch wines');
-        
-        const data = await response.json();
+useEffect(() => {
+  let isMounted = true;
+
+  const fetchWines = async () => {
+    if (!currentCategory) return;
+    
+    try {
+      setLoading(true);
+      const response = await fetch(`https://api.sampleapis.com/wines/${currentCategory}`);
+      if (!response.ok) throw new Error('Failed to fetch wines');
+      
+      const data = await response.json();
+      if (isMounted) {
         const formattedData = data.map(wine => ({
           id: wine.id,
           name: wine.wine,
-          image: wine.image || 'default-wine-image.jpg' 
+          image: wine.image || 'https://via.placeholder.com/300x400?text=No+Image',
+          winery: wine.winery,
+          rating: wine.rating,
+          location: wine.location,
         }));
         
         setWines(formattedData);
-      } catch (err) {
-        setError(err.message);
-      } finally {
+        setCurrentPage(1);
         setLoading(false);
       }
-    };
-
-    fetchWines();
-  }, [currentCategory]);
-
-  const handleWineClick = (id) => {
-    navigate(`/wineinfopage/${id}`); 
+    } catch (err) {
+      if (isMounted) {
+        setError(err.message);
+        setLoading(false);
+      }
+    }
   };
 
-  // const getCurrentPageWines = () => {
-  //   const startIndex = (currentPage - 1) * itemsPerPage;
-  //   return wines.slice(startIndex, startIndex + itemsPerPage);
-  // };
+  fetchWines();
+  return () => { isMounted = false; };
+}, [currentCategory]);
+
+  const handleWineClick = (id) => {
+    // 와인 ID와 함께 현재 카테고리도 state로 전달
+    navigate(`/wineinfopage/${id}`, { state: { category: currentCategory } });
+  };
 
   const handleScroll = () => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
